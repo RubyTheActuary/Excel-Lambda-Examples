@@ -1,0 +1,14 @@
+C:\Users\19132\source\repos\Examplea\bin\Debug\Examplea.exe.config
+C:\Users\19132\source\repos\Examplea\bin\Debug\Examplea.exe
+C:\Users\19132\source\repos\Examplea\bin\Debug\Examplea.pdb
+C:\Users\19132\source\repos\Examplea\obj\Debug\ExampleVAExcelLambda.csproj.AssemblyReference.cache
+C:\Users\19132\source\repos\Examplea\obj\Debug\ExampleVAExcelLambda.csproj.CoreCompileInputs.cache
+C:\Users\19132\source\repos\Examplea\obj\Debug\Examplea.exe
+C:\Users\19132\source\repos\Examplea\obj\Debug\Examplea.pdb
+C:\Users\19132\source\repos\ExampleExcelLambda\bin\Debug\Examplea.exe.config
+C:\Users\19132\source\repos\ExampleExcelLambda\bin\Debug\Examplea.exe
+C:\Users\19132\source\repos\ExampleExcelLambda\bin\Debug\Examplea.pdb
+C:\Users\19132\source\repos\ExampleExcelLambda\obj\Debug\ExampleVAExcelLambda.csproj.AssemblyReference.cache
+C:\Users\19132\source\repos\ExampleExcelLambda\obj\Debug\ExampleVAExcelLambda.csproj.CoreCompileInputs.cache
+C:\Users\19132\source\repos\ExampleExcelLambda\obj\Debug\Examplea.exe
+C:\Users\19132\source\repos\ExampleExcelLambda\obj\Debug\Examplea.pdb
