@@ -1,7 +1,8 @@
 module VA
-    ( mawStack
+    ( calculatePolarisMax
     ) where
 
+import Data.List (zip6,unzip7)
 --Activation Date: The date on which your Lifetime Income is activated. Upon activation of Lifetime Income, changes cannot be made to the Covered Person(s) or Income Options. 
 --Anniversary Value: The contract value on any Benefit Year Anniversary. The Continuation Contribution, if applicable, is included in the calculation of Anniversary Values. Please see SPOUSAL CONTINUATION below.
 --Benefit Effective Date: The date the Living Benefit is elected. The Benefit Effective Date is the same as the Contract Issue Date.
@@ -102,3 +103,57 @@ mawStack (prevCv,prevIB, prevICB, prevMawa,_,_,_) payPeriod wdT cv isAnn isAct p
         incBase = incomeBase initialCurrIB adjustment
         mawa = maxAllowableWdAmount cv incBase mawdRate
     in (cv, incBase, incCreditBase, mawa, wdPenaltyMult, adjustment, incCredit)
+
+
+
+calculatePolarisMax :: ([String], [[Double]], [[Bool]])
+calculatePolarisMax =
+    let mawRate = 0.0625
+        incomeCreditRate = 0.0525
+        pipRate = 0.04
+        activationPeriod  :: Double
+        activationPeriod = 4.5
+        payPeriod :: [Double]
+        payPeriod = [0.0, 0.5 .. 11.0]
+        purchasePayments = map getPurchasePayments payPeriod
+        wdTaken = map getWdTaken payPeriod
+        contractValue :: [Double]
+        contractValue = [100000,165000,170000,255000,287000,287000,300000,305000,312000,302000,305000,280000,290000,260000,230000,230000,150000,150000,100000,100000,50000,50000,0]
+
+        -- Calculate Columns -------
+        isAnniversary :: [Bool]
+        isAnniversary = map (\p -> (p - fromIntegral (floor p))==0.0) payPeriod
+        isActivated = map (>= activationPeriod) payPeriod
+        initialValues = (0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+        workTuples = (payPeriod,wdTaken,contractValue,isAnniversary,isActivated,purchasePayments)
+        workValues = tupleOf6ListsToListOfTuples workTuples
+        mawStackx me pp wt cv ann act pay = mawStack me pp wt cv ann act pay mawRate incomeCreditRate
+        mawTuples = scanl (\me (pp,wt,cv,ann,act,pay) -> mawStackx me pp wt cv ann act pay ) initialValues workValues
+        --the scanl puts the starting values in the first row of the output, which I do not whant to display. It also impacts the protectedIncomePayment.
+        cleanMawTuples = drop 1 mawTuples
+        protectedIncomePayment = map (\(av,ib,_,_,_,_,_) -> if av<0.001 then pipRate * ib else 0 ) cleanMawTuples
+
+        --output results ----
+        mawLists = unzip7 cleanMawTuples
+        prepareForOutput (a,b,c,d,e,f,g) = [a,b,c,d,e,f,g]
+        mawOutput = prepareForOutput mawLists
+        header = ["Period","Pays","Wd Taken","CV","Income Base", "income Credit Base", "MAW Amount","Wd Penalty", "Adjustment", "Income Credit","PIP Amount","Is Anniversary","Is Activated"]
+        finalOutput = [payPeriod,purchasePayments,wdTaken] ++ mawOutput ++ [protectedIncomePayment]
+        in (header, finalOutput, [isAnniversary,isActivated])
+
+getPurchasePayments :: Double -> Double
+getPurchasePayments 0.0 = 100000.00
+getPurchasePayments 0.5 = 60000.00
+getPurchasePayments 1.5 = 90000.00
+getPurchasePayments _ = 0.0
+
+getWdTaken :: Double -> Double
+getWdTaken 3.5 = 5000.00
+getWdTaken 4.5 = 19500.00
+getWdTaken 5.5 = 24960.00
+getWdTaken 6.5 = 24483.00
+getWdTaken _ = 0
+
+tupleOf6ListsToListOfTuples :: ([a], [b], [c], [d], [e], [f]) -> [(a, b, c, d, e, f)]
+tupleOf6ListsToListOfTuples (xs, ys, zs, us, vs, ws) =
+    zip6 xs ys zs us vs ws
