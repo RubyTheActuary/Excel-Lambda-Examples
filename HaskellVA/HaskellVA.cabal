@@ -1,0 +1,45 @@
+cabal-version:      2.4
+name:               HaskellVA
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis:
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+license:            MIT
+license-file:       LICENSE
+author:             RubyTheActuary
+maintainer:         bryon.robidoux@gmail.com
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+common common-all
+    build-depends:    base ^>=4.16.4.0,
+                      regex-compat>=0.95.2.1
+    default-language: Haskell2010
+    ghc-options: -Wall
+
+library
+    import: common-all
+    exposed-modules: Lib
+    other-modules: PolarisMax,PolarisMaxDaily
+    hs-source-dirs:   src
+
+executable HaskellVA
+    import: common-all
+    
+    main-is:          Main.hs
+
+    -- Modules included in this executable, other than Main.
+    other-modules: Lib, PolarisMax,PolarisMaxDaily
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    hs-source-dirs:   app, src
+    
